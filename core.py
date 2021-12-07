@@ -1,118 +1,76 @@
-# program file manager
-from os import getcwd
-from os import name
-import sys
+import datetime
+import os
+import shutil
 
 
-from guess_numb import input_num
-from guess_numb import play_again_func
-from main import ch_dir
-from main import copy_function
-from main import create_file
-from main import create_folder
-from main import get_list
-from main import remove_file
-from main import save_info
+# function to change directory
+def ch_dir(path_dir):
+    os.chdir(path_dir)
+    print('\nDirectory was changed.')
+    
+# creating file function
+def create_file(name, text = None):
+        with open(name, 'w', encoding='utf-8') as f:
+            if text:
+                f.write(text)
 
-
-# starting program
-save_info('\n{}\nStart\n'.format(20 * '='))
-
-command = sys.argv[1]
-
-# program body
-# change directory
-if command == 'cd':
-    cur_dir = getcwd()
-    print('\nCurrent directory:\n\t', cur_dir, '\n')
-    name = sys.argv[2]
-    ch_dir(name)
-
-
-# show time information
-elif command == 'save_inf':
+# creating folder function
+def create_folder(name):
     try:
-        name = sys.argv[2]
-        save_info(name)
-    except IndexError:
-        print('Insert command name again!')
+        os.mkdir(name)
+    except FileExistsError:
+        print('\nFolder exist!\n{}'.format(20 * '*'))
 
-# copy file or folder
-elif command == 'copy':
-    try:
-        root_file = sys.argv[2]
-        name = sys.argv[3]
-        copy_function(root_file, name)
-    except IndexError:
-        print('Enter file name to copy again!')
+# show current directory
+def get_cwd():
+    os.getcwd()
 
-# create file
-elif command == 'cfile':
-    try:
-        name_1 = sys.argv[2]
-        create_file(name_1)
-    except IndexError:
-        print('\nInsert file name!')
-
-# create folder
-elif command == 'cfolder':
-    try:
-        name = sys.argv[2]
-        create_folder(name)
-    except IndexError:
-        print('\n--Insert folder name!--')
-
-# the game
-elif command == 'game':
-    try:
-        input_num()
-        play_again_func()
-    except IndexError:
-        print('Insert command name again!')
+# show folder list function
+def get_list(folder_only=False):
+    result = os.listdir()
+    if folder_only:
+        result = [f for f in result if os.path.isdir(f)]
+    print(result)
+    
+# remove file function
+def remove_file(file):
+    if os.path.isdir(file):
+        try:
+            os.rmdir(file)
+        except FileNotFoundError:
+            print('Folder not exist or was deleted.')
+    else:
+        os.remove(file)
         
-# show list
-elif command == 'list':
-    get_list()
+# copy folder or file
+def copy_function(name, new_name):
+    if os.path.isdir(name):
+        try:
+            shutil.copytree(name, new_name)
+        except FileExistsError:
+            print('Folder exist!\n{}'.format(20 * '='))
+    else:
+        shutil.copy(name, new_name)
 
-# remove file
-elif command == 'remove':
-    try:
-        name = sys.argv[2]
-        remove_file(name)
-    except IndexError:
-        print('\n--Insert correct file name!--')
-    except FileNotFoundError:
-        print('\n--File is not exist!--')
+# function to create file with date and time
+def save_info(message):
+    current_time = datetime.datetime.now()
+    result = f'\n{current_time} - {message}'
+    # write to file
+    with open('log.txt', 'a', encoding='utf-8') as f:
+        f.write(result + '\n')
 
-# write file
-elif command == 'write':
-    try:
-        file_name_1 = sys.argv[2]
-        file_name_2 = sys.argv[3]
-        create_file(file_name_1, file_name_2)
-    except IndexError:
-        print('\nInsert file name or text!')
-
-# show command list
-elif command == 'help':
-    print(
-        '\nIts a file manager, enter a command to get the function;'.upper()
-        )
-    print('\nManager commands:\n{}\n'.format(45 * '='))
-    print('\t1. "cd": Change directory;\n')
-    print('\t2. "copy": Insert name and new name to copy a folder or file;\n')
-    print('\t3. "game": To play in "guess number".\n')
-    print('\t4. "save_inf": Save information with date and message;\n')
-    print('\t5. "cfile": Create file with text;\n')
-    print('\t6. "cfolder": Create folder;\n')
-    print('\t7. "list": Get the list;\n')
-    print('\t8. "write": Write file;\n')
-    print('\t9. "remove": Remove file or folder;\n\n{}'.format(45 * '='))
-
-# ending program
-save_info('\n{}\nEnd\n'.format(20 * '='))
-
-
-
-
-
+# module to use funtions
+if __name__ == '__main__':
+    #create_file('text.txt')
+    #create_folder('new_f')
+    #get_list()
+    #get_list(True)
+    #remove_file('new_f')
+    #remove_file('file.txt')
+    #create_file('text.txt', 'hellpp')
+    #create_folder('new_f')
+    #copy_function('new_f', 'new_2_f')
+    #copy_function('file.txt', 'new_file.txt')
+    #ch_dir('c:\\Users\\PC\\Desktop'),
+    save_info('message')
