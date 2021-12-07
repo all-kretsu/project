@@ -1,4 +1,4 @@
-z# program file manager
+# program file manager
 from os import getcwd
 from os import name
 import sys
