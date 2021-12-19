@@ -32,6 +32,9 @@ def input_num():
         answer = ('Yes, you are right!\n'
                 if guess_num == random_num
                 else '\nNo, its wrong!\n')
+        if guess_num == random_num:
+            print('\n\t\tYou win!\n')
+            break
         print(answer)
         # if tries will be an 1, script will show a hint
         if chance == 2:
